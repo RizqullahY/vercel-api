@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
@@ -14,6 +16,7 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/api/", (req: Request, res: Response) => {
   res.redirect("/api/docs");
 });
+
 app.get("/api/docs", (req: Request, res: Response) => {
   const filePath = path.resolve(__dirname, "../data/documentation.json");
   fs.readFile(filePath, "utf-8", (err, data) => {
@@ -55,6 +58,12 @@ app.get("/api/quotes", (req: Request, res: Response) => {
       data: quotes,
     });
   });
+});
+
+// V2 
+
+app.get("/api/v2/docs", (req: Request, res: Response) => {
+  res.sendFile(path.resolve(__dirname, "../public/api/index.html"));
 });
 
 export default app;

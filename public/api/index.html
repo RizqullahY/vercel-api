@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API DOCS V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div
+      class="bg-gradient-to-r from-blue-900 to-blue-500 h-screen flex justify-center items-center"
+    >
+      <div class="bg-opacity-75 rounded-xl p-6 flex flex-col space-y-3">
+        <h1 class="text-white text-4xl font-bold">Quotes API Documentation</h1>
+        <p class="text-white text-lg">
+          Explore the Quotes API and interact with the available endpoints.
+        </p>
+        <br />
+
+        <div class="text-center">
+          <p class="text-white text-lg">Random Quote</p>
+          <pre class="bg-gray-800 text-white p-4 rounded-md overflow-auto">
+            <code>
+const quote = "The only way to do great work is to love what you do.";
+console.log(quote);
+            </code>
+          </pre>
+          <button
+            onclick="getRandomQuote()"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+          >
+            Quote Of The Day
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+async function getRandomQuote() {
+    const url = 'https://raflyasligalek.vercel.app/api/quote-on-the-day';
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        Swal.fire({
+            title: 'Random Quote',
+            text: `${data.quote} — ${data.author}`, 
+            icon: 'info',
+            confirmButtonText: 'Got it!'
+        });
+    } catch (error) {
+        console.error('Error fetching quote:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Something went wrong while fetching the quote.',
+            icon: 'error',
+            confirmButtonText: 'Try again'
+        });
+    }
+}
+
+    </script>
+  </body>
+</html>
