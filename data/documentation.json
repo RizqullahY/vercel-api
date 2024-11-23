@@ -1,0 +1,26 @@
+{
+    "apiDocumentation": {
+      "title": "Quotes API Documentation",
+      "description": "This API provides inspirational quotes. You can fetch a random quote or all available quotes.",
+      "version": "1.0.0",
+      "baseUrl": "/api",
+      "endpoints": [
+        {
+          "endpoint" : "/docs",
+          "method" : "GET",
+          "description" : "This is a documentation of this API"
+        },
+        {
+          "endpoint": "/quote-on-the-day",
+          "method": "GET",
+          "description": "Get a random quote of the day."
+        },
+        {
+          "endpoint": "/quotes",
+          "method": "GET",
+          "description": "Get all quotes available in the database."
+        }
+      ]
+    }
+  }
+  
