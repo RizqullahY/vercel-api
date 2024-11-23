@@ -2,8 +2,11 @@ import express, { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 import cors from "cors";
+import bodyParser from "body-parser";
+import apiRoutes from "../routes/apiRoutes";
 
 const app = express();
+app.use(bodyParser.json());
 app.use(cors());
 
 app.use(express.json());
@@ -26,7 +29,7 @@ app.get("/api/docs", (req: Request, res: Response) => {
   });
 });
 
-app.get("/api/quote-on-the-day", (req: Request, res: Response) => {
+app.get("/api/quote-of-the-day", (req: Request, res: Response) => {
   const filePath = path.resolve(__dirname, "../data/data.json");
   console.log("File path for quote-on-the-day:", filePath);
   fs.readFile(filePath, "utf-8", (err, data) => {
@@ -65,5 +68,7 @@ app.get("/api/quotes", (req: Request, res: Response) => {
 app.get("/api/v2/docs", (req: Request, res: Response) => {
   res.sendFile(path.resolve(__dirname, "../public/api/index.html"));
 });
+
+app.use("/api", apiRoutes);
 
 export default app;

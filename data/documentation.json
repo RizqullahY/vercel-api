@@ -13,7 +13,7 @@
             "description": "This endpoint provides documentation for this version of the API."
           },
           {
-            "endpoint": "/quote-on-the-day",
+            "endpoint": "/quote-of-the-day",
             "method": "GET",
             "description": "Retrieve a random quote of the day."
           },
