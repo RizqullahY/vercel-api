@@ -12,7 +12,7 @@
   >
     <div
       class="bg-opacity-75 rounded-xl p-6 flex flex-col space-y-6 w-full max-w-3xl mx-4 sm:mx-8 lg:mx-16 mt-5"
-    ><br><br><br>
+    >
       <h1 class="text-white text-4xl font-bold text-center">
         Quotes API Documentation
       </h1>
@@ -28,7 +28,7 @@
       <code>
       async function getRandomQuote() {
           const url = 
-          "https://raflyasligalek.vercel.app/api/quote-fn-the-day";
+          "https://raflyasligalek.vercel.app/api/quote-of-the-day";
           try {
               const response = await fetch(url);
               const data = await response.json();
@@ -46,21 +46,12 @@
         </button>
       </div>
 
-      <div class="space-y-4">
-        <p class="text-white text-lg mb-3">Send Your Quote</p>
-        <button
-          onclick="sendYourQuote()"
-          class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 w-full sm:w-auto mb-3"
-        >
-          Send Your Quote
-        </button><br><br><br>
-      </div>
     </div>
 
     <!-- Get Random Quote-->
     <script>
       async function getRandomQuote() {
-        const url = "https://raflyasligalek.vercel.app/api/quote-on-the-day";
+        const url = "https://raflyasligalek.vercel.app/api/quote-of-the-day";
         try {
           const response = await fetch(url);
           const data = await response.json();
@@ -78,69 +69,6 @@
             icon: "error",
             confirmButtonText: "Try again",
           });
-        }
-      }
-    </script>
-
-    <!-- Send Your Quote-->
-    <script>
-      async function sendYourQuote() {
-        const { value: formValues } = await Swal.fire({
-          title: "Send Your Quote",
-          html:
-            '<div class="">' +
-            '<input id="swal-input-token" class="swal2-input" placeholder="Enter your token" style="width: 80%;">' +
-            '<textarea id="swal-input-quote" class="swal2-textarea" placeholder="Enter your quote" style="width: 80%;"></textarea>' +
-            "</div>",
-          focusConfirm: false,
-          preConfirm: () => {
-            return {
-              token: document.getElementById("swal-input-token").value,
-              quote: document.getElementById("swal-input-quote").value,
-            };
-          },
-        });
-
-        if (formValues) {
-          const { token, quote } = formValues;
-          if (!token || !quote) {
-            Swal.fire("Error", "Both fields are required!", "error");
-            return;
-          }
-          console.log(formValues)
-
-        //   try {
-        //     const response = await fetch(
-        //       "https://your-api-endpoint.com/api/submit-quote",
-        //       {
-        //         method: "POST",
-        //         headers: {
-        //           "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify({ token, quote }),
-        //       }
-        //     );
-        //     const data = await response.json();
-        //     if (response.ok) {
-        //       Swal.fire(
-        //         "Success",
-        //         "Quote has been sent successfully!",
-        //         "success"
-        //       );
-        //     } else {
-        //       Swal.fire(
-        //         "Error",
-        //         data.message || "Something went wrong!",
-        //         "error"
-        //       );
-        //     }
-        //   } catch (error) {
-        //     Swal.fire(
-        //       "Error",
-        //       "Failed to send the quote. Please try again later.",
-        //       "error"
-        //     );
-        //   }
         }
       }
     </script>

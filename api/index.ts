@@ -3,7 +3,6 @@ import fs from "fs";
 import path from "path";
 import cors from "cors";
 import bodyParser from "body-parser";
-import apiRoutes from "../routes/apiRoutes";
 
 const app = express();
 app.use(bodyParser.json());
@@ -68,7 +67,5 @@ app.get("/api/quotes", (req: Request, res: Response) => {
 app.get("/api/v2/docs", (req: Request, res: Response) => {
   res.sendFile(path.resolve(__dirname, "../public/api/index.html"));
 });
-
-app.use("/api", apiRoutes);
 
 export default app;
