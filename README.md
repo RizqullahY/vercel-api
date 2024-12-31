@@ -1,21 +1,21 @@
-# Portofolio Web Sederhana dengan API
+## **Here's the translated README.md in English:**
 
-**Deskripsi:**
+### **Simple Web Portfolio with API**
 
-Ini adalah proyek portofolio web sederhana yang menampilkan informasi tentang saya dan proyek-proyek yang telah saya kerjakan. Proyek ini juga dilengkapi dengan API yang dapat diakses melalui endpoint `/api` dan `/api/docs`.
+**Description:**
 
-**Fitur:**
+This is a straightforward web portfolio project that showcases information about me and the projects I've completed. The project is also equipped with an API that can be accessed through the endpoints `/api` and `/api/docs`.
 
-* **Halaman Utama:** Menampilkan profil singkat, proyek unggulan, dan kontak.
-* **Halaman Proyek:** Detail tentang setiap proyek, termasuk deskripsi, teknologi yang digunakan, dan demo.
+**Features:**
+
+* **Homepage:** Displays a brief profile, featured projects, and contact information.
+* **Projects Page:** Provides details about each project, including descriptions, technologies used, and demos.
 * **API:**
-    * **Endpoint:** `/api` (untuk mendapatkan tampilan ringkas)
-    * **Endpoint:** `/api/docs` (untuk melihat dokumentasi API yang lebih detail)
+  * **Endpoint:** `/api` (for a concise overview)
+  * **Endpoint:** `/api/docs` (for more detailed API documentation)
 
+**Technologies Used:**
 
-**Teknologi yang Digunakan:**
-
-* **Frontend:** HTML, Tailwindcss
+* **Frontend:** HTML, Tailwind CSS
 * **Backend:** Node.js, Express.js
 * **Tools:** Git, VS Code
-
