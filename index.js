@@ -33,9 +33,9 @@ app.get("/api/docs", (req, res) => {
 });
 
 // V2 
-app.get("/api/v2/docs", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./public/api/index.html"));
-});
+// app.get("/api/v2/docs", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "./public/api/index.html"));
+// });
 
 app.get("/api/quote-of-the-day", (req, res) => {
   const filePath = path.resolve(__dirname, "./data/data.json");
