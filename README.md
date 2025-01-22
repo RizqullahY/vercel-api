@@ -1,5 +1,3 @@
-## **Here's the translated README.md in English:**
-
 ### **Simple Web Portfolio with API**
 
 **Description:**
