@@ -15,16 +15,14 @@ app.get("/", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
-app.get("/api/", (req: Request, res: Response) => {
-  res.redirect("/api/docs");
-});
-
 app.get("/api/docs", (req: Request, res: Response) => {
   const filePath = path.resolve(__dirname, "../data/documentation.json");
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
       res.status(500).send({ message: "Error reading documentation file" });
-    } else res.json(JSON.parse(data));
+    } else {
+      res.json(JSON.parse(data));
+    }
   });
 });
 
@@ -66,8 +64,6 @@ app.get("/api/quotes", (req: Request, res: Response) => {
     });
   });
 });
-
-
 
 // Endpoint GET /api/animated-control
 app.get("/api/animated-control", (req: Request, res: Response) => {
