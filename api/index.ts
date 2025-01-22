@@ -89,34 +89,45 @@ app.get("/api/animated-control", (req: Request, res: Response) => {
 app.post("/api/animated-control", (req: Request, res: Response) => {
   const filePath = path.resolve(__dirname, "../data/animated-status.json");
 
+  console.log('Reading from:', filePath);  // Debugging: Memastikan path yang benar
+
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
+      console.error('Error reading file:', err);  // Debugging: Menampilkan error baca file
       return res.status(500).json({
         status: "error",
         message: "Unable to read animated-status.json",
       });
     }
 
-    let status = JSON.parse(data);
+    try {
+      let status = JSON.parse(data);  // Pastikan data JSON valid
+      status.isEnabled = !status.isEnabled;
 
-    // Toggle the value of the "isEnabled" field
-    status.isEnabled = !status.isEnabled;
+      fs.writeFile(filePath, JSON.stringify(status, null, 2), "utf-8", (writeErr) => {
+        if (writeErr) {
+          console.error('Error writing file:', writeErr);  // Debugging: Menampilkan error tulis file
+          return res.status(500).json({
+            status: "error",
+            message: "Unable to write to animated-status.json",
+          });
+        }
 
-    fs.writeFile(filePath, JSON.stringify(status, null, 2), "utf-8", (writeErr) => {
-      if (writeErr) {
-        return res.status(500).json({
-          status: "error",
-          message: "Unable to write to animated-status.json",
+        res.json({
+          status: "success",
+          message: "Status updated successfully",
+          data: status,
         });
-      }
-
-      res.json({
-        status: "success",
-        message: "Status updated successfully",
-        data: status,
       });
-    });
+    } catch (parseError) {
+      console.error('Error parsing JSON:', parseError);  // Debugging: Menampilkan error parsing JSON
+      return res.status(500).json({
+        status: "error",
+        message: "Invalid JSON format in animated-status.json",
+      });
+    }
   });
 });
+
 
 export default app;
