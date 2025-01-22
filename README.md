@@ -19,3 +19,5 @@ Ini adalah proyek portofolio web sederhana yang menampilkan informasi tentang sa
 * **Backend:** Node.js, Express.js
 * **Tools:** Git, VS Code
 
+- vercel dev
+

@@ -28,6 +28,11 @@ app.get("/api/docs", (req: Request, res: Response) => {
   });
 });
 
+// V2 
+app.get("/api/v2/docs", (req: Request, res: Response) => {
+  res.sendFile(path.resolve(__dirname, "../public/api/index.html"));
+});
+
 app.get("/api/quote-of-the-day", (req: Request, res: Response) => {
   const filePath = path.resolve(__dirname, "../data/data.json");
   console.log("File path for quote-on-the-day:", filePath);
@@ -62,10 +67,60 @@ app.get("/api/quotes", (req: Request, res: Response) => {
   });
 });
 
-// V2 
 
-app.get("/api/v2/docs", (req: Request, res: Response) => {
-  res.sendFile(path.resolve(__dirname, "../public/api/index.html"));
+
+// Endpoint GET /api/animated-control
+app.get("/api/animated-control", (req: Request, res: Response) => {
+  const filePath = path.resolve(__dirname, "../data/animated-status.json");
+
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({
+        status: "error",
+        message: "Unable to read animated-status.json",
+      });
+    }
+
+    const status = JSON.parse(data);
+    res.json({
+      status: "success",
+      data: status,
+    });
+  });
+});
+
+// Endpoint POST /api/animated-control
+app.post("/api/animated-control", (req: Request, res: Response) => {
+  const filePath = path.resolve(__dirname, "../data/animated-status.json");
+
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({
+        status: "error",
+        message: "Unable to read animated-status.json",
+      });
+    }
+
+    let status = JSON.parse(data);
+
+    // Toggle the value of the "isEnabled" field
+    status.isEnabled = !status.isEnabled;
+
+    fs.writeFile(filePath, JSON.stringify(status, null, 2), "utf-8", (writeErr) => {
+      if (writeErr) {
+        return res.status(500).json({
+          status: "error",
+          message: "Unable to write to animated-status.json",
+        });
+      }
+
+      res.json({
+        status: "success",
+        message: "Status updated successfully",
+        data: status,
+      });
+    });
+  });
 });
 
 export default app;
