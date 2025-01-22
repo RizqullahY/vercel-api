@@ -1,22 +1,28 @@
-import express, { Request, Response } from "express";
-import fs from "fs";
-import path from "path";
-import cors from "cors";
-import bodyParser from "body-parser";
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+
+// Menggunakan fileURLToPath untuk mendapatkan __dirname pada ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public")));
+// Menggunakan __dirname dengan path.join
+app.use(express.static(path.join(__dirname, "./public"))); // Memperbaiki penggunaan path
 
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public", "index.html")); // Memperbaiki penggunaan path
 });
 
-app.get("/api/docs", (req: Request, res: Response) => {
-  const filePath = path.resolve(__dirname, "../data/documentation.json");
+app.get("/api/docs", (req, res) => {
+  const filePath = path.resolve(__dirname, "./data/documentation.json");
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
       res.status(500).send({ message: "Error reading documentation file" });
@@ -27,12 +33,12 @@ app.get("/api/docs", (req: Request, res: Response) => {
 });
 
 // V2 
-app.get("/api/v2/docs", (req: Request, res: Response) => {
-  res.sendFile(path.resolve(__dirname, "../public/api/index.html"));
+app.get("/api/v2/docs", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./public/api/index.html"));
 });
 
-app.get("/api/quote-of-the-day", (req: Request, res: Response) => {
-  const filePath = path.resolve(__dirname, "../data/data.json");
+app.get("/api/quote-of-the-day", (req, res) => {
+  const filePath = path.resolve(__dirname, "./data/data.json");
   console.log("File path for quote-on-the-day:", filePath);
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
@@ -49,8 +55,8 @@ app.get("/api/quote-of-the-day", (req: Request, res: Response) => {
   });
 });
 
-app.get("/api/quotes", (req: Request, res: Response) => {
-  const filePath = path.resolve(__dirname, "../data/data.json");
+app.get("/api/quotes", (req, res) => {
+  const filePath = path.resolve(__dirname, "./data/data.json");
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
       return res
@@ -66,8 +72,8 @@ app.get("/api/quotes", (req: Request, res: Response) => {
 });
 
 // Endpoint GET /api/animated-control
-app.get("/api/animated-control", (req: Request, res: Response) => {
-  const filePath = path.resolve(__dirname, "../data/animated-status.json");
+app.get("/api/animated-control", (req, res) => {
+  const filePath = path.resolve(__dirname, "./data/animated-status.json");
 
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
@@ -85,15 +91,14 @@ app.get("/api/animated-control", (req: Request, res: Response) => {
   });
 });
 
-// Endpoint POST /api/animated-control
-app.post("/api/animated-control", (req: Request, res: Response) => {
-  const filePath = path.resolve(__dirname, "../data/animated-status.json");
+app.post("/api/animated-control", (req, res) => {
+  const filePath = path.resolve(__dirname, "./data/animated-status.json");
 
-  console.log('Reading from:', filePath);  // Debugging: Memastikan path yang benar
+  console.log('Reading from:', filePath);  
 
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) {
-      console.error('Error reading file:', err);  // Debugging: Menampilkan error baca file
+      console.error('Error reading file:', err);  
       return res.status(500).json({
         status: "error",
         message: "Unable to read animated-status.json",
@@ -101,12 +106,12 @@ app.post("/api/animated-control", (req: Request, res: Response) => {
     }
 
     try {
-      let status = JSON.parse(data);  // Pastikan data JSON valid
-      status.isEnabled = !status.isEnabled;
+      let status = JSON.parse(data);  
+      status.animated = !status.animated;
 
       fs.writeFile(filePath, JSON.stringify(status, null, 2), "utf-8", (writeErr) => {
         if (writeErr) {
-          console.error('Error writing file:', writeErr);  // Debugging: Menampilkan error tulis file
+          console.error('Error writing file:', writeErr);  
           return res.status(500).json({
             status: "error",
             message: "Unable to write to animated-status.json",
@@ -120,7 +125,7 @@ app.post("/api/animated-control", (req: Request, res: Response) => {
         });
       });
     } catch (parseError) {
-      console.error('Error parsing JSON:', parseError);  // Debugging: Menampilkan error parsing JSON
+      console.error('Error parsing JSON:', parseError);  
       return res.status(500).json({
         status: "error",
         message: "Invalid JSON format in animated-status.json",
@@ -129,5 +134,7 @@ app.post("/api/animated-control", (req: Request, res: Response) => {
   });
 });
 
-
-export default app;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
