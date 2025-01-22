@@ -4,8 +4,12 @@ import path from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
-// Menggunakan fileURLToPath untuk mendapatkan __dirname pada ES module
+const SUPABASE_URL = process.env.SUPABASE_URL; 
+const SUPABASE_KEY = process.env.SUPABASE_KEY; 
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -14,11 +18,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(express.json());
-// Menggunakan __dirname dengan path.join
-app.use(express.static(path.join(__dirname, "./public"))); // Memperbaiki penggunaan path
+app.use(express.static(path.join(__dirname, "./public"))); 
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public", "index.html")); // Memperbaiki penggunaan path
+  res.sendFile(path.join(__dirname, "./public", "index.html")); 
 });
 
 app.get("/api/docs", (req, res) => {
@@ -33,9 +36,9 @@ app.get("/api/docs", (req, res) => {
 });
 
 // V2 
-// app.get("/api/v2/docs", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "./public/api/index.html"));
-// });
+app.get("/api/v2/docs", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./public/api/index.html"));
+});
 
 app.get("/api/quote-of-the-day", (req, res) => {
   const filePath = path.resolve(__dirname, "./data/data.json");
@@ -72,66 +75,65 @@ app.get("/api/quotes", (req, res) => {
 });
 
 // Endpoint GET /api/animated-control
-app.get("/api/animated-control", (req, res) => {
-  const filePath = path.resolve(__dirname, "./data/animated-status.json");
+app.get('/api/animated-control', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('animated_status')
+      .select('*')
+      .single();
 
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      return res.status(500).json({
-        status: "error",
-        message: "Unable to read animated-status.json",
-      });
+    if (error) {
+      throw error;
     }
 
-    const status = JSON.parse(data);
     res.json({
-      status: "success",
-      data: status,
+      status: 'success',
+      data,
     });
-  });
+  } catch (error) {
+    console.error('Error fetching animated status:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Unable to fetch animated status.',
+    });
+  }
 });
 
-app.post("/api/animated-control", (req, res) => {
-  const filePath = path.resolve(__dirname, "./data/animated-status.json");
+// Endpoint POST /api/animated-control
+app.post('/api/animated-control', async (req, res) => {
+  try {
+    const { data: currentStatus, error: fetchError } = await supabase
+      .from('animated_status')
+      .select('*')
+      .single();
 
-  console.log('Reading from:', filePath);  
-
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      console.error('Error reading file:', err);  
-      return res.status(500).json({
-        status: "error",
-        message: "Unable to read animated-status.json",
-      });
+    if (fetchError) {
+      throw fetchError;
     }
 
-    try {
-      let status = JSON.parse(data);  
-      status.animated = !status.animated;
+    const newStatus = !currentStatus.animated;
 
-      fs.writeFile(filePath, JSON.stringify(status, null, 2), "utf-8", (writeErr) => {
-        if (writeErr) {
-          console.error('Error writing file:', writeErr);  
-          return res.status(500).json({
-            status: "error",
-            message: "Unable to write to animated-status.json",
-          });
-        }
+    const { data, error: updateError } = await supabase
+      .from('animated_status')
+      .update({ animated: newStatus })
+      .eq('id', currentStatus.id);
 
-        res.json({
-          status: "success",
-          message: "Status updated successfully",
-          data: status,
-        });
-      });
-    } catch (parseError) {
-      console.error('Error parsing JSON:', parseError);  
-      return res.status(500).json({
-        status: "error",
-        message: "Invalid JSON format in animated-status.json",
-      });
+    if (updateError) {
+      throw updateError;
     }
-  });
+
+    res.json({
+      status: 'success',
+      message: 'Status updated successfully.',
+      data,
+    });
+  } catch (error) {
+    console.error('Error updating animated status:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Unable to update animated status.',
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
