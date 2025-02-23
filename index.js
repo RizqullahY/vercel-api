@@ -38,7 +38,7 @@ app.get("/api/docs", (req, res) => {
 });
 
 // V2 
-app.get("/api/v2/docs", (req, res) => {
+app.get("/api/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./public/api/index.html"));
 });
 
