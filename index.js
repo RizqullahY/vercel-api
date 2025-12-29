@@ -21,16 +21,6 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-/* =========================
-   HELPERS
-========================= */
-const generateCode = (length = 6) => {
-  const chars =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return Array.from({ length }, () =>
-    chars[Math.floor(Math.random() * chars.length)]
-  ).join("");
-};
 
 /* =========================
    ROUTES: STATIC
@@ -57,10 +47,6 @@ app.get("/api", (req, res) => {
   res.sendFile(path.join(__dirname, "public/api/index.html"));
 });
 
-// Shortener GUI Page
-app.get("/api/shortener", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/api/shortener.html"));
-});
 
 /* =========================
    ROUTES: QUOTES
@@ -100,65 +86,25 @@ app.get("/api/quotes", (req, res) => {
   });
 });
 
-/* =========================
-   ROUTES: SHORT URL
-========================= */
-const shortFile = path.join(__dirname, "data/shortlinks.json");
-
-// POST → create short URL
-app.post("/api/shorten", (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res
-      .status(400)
-      .json({ status: "error", message: "URL is required" });
-  }
-
-  let links = [];
-  if (fs.existsSync(shortFile)) {
-    links = JSON.parse(fs.readFileSync(shortFile, "utf-8"));
-  }
-
-  const code = generateCode();
-  const newLink = {
-    code,
-    originalUrl: url,
-    createdAt: new Date().toISOString(),
-    clicks: 0,
-  };
-
-  links.push(newLink);
-  fs.writeFileSync(shortFile, JSON.stringify(links, null, 2));
-
-  res.json({
-    status: "success",
-    data: {
-      shortUrl: `${req.protocol}://${req.get("host")}/s/${code}`,
-    },
-  });
-});
-
 // GET → redirect short URL
 app.get("/s/:code", (req, res) => {
-  const { code } = req.params;
+  const filePath = path.join(__dirname, "data/datalinks.json");
 
-  if (!fs.existsSync(shortFile)) {
-    return res.status(404).send("Short URL not found");
-  }
+  fs.readFile(filePath, "utf-8", (err, raw) => {
+    if (err) return res.status(500).send("Unable to read datalinks");
 
-  const links = JSON.parse(fs.readFileSync(shortFile, "utf-8"));
-  const link = links.find((l) => l.code === code);
+    let links;
+    try {
+      links = JSON.parse(raw);
+    } catch {
+      return res.status(500).send("Invalid datalinks.json format");
+    }
 
-  if (!link) {
-    return res.status(404).send("Short URL not found");
-  }
+    const found = links.find(l => l.code === req.params.code);
+    if (!found) return res.status(404).send("Short link not found");
 
-  // increment click
-  link.clicks += 1;
-  fs.writeFileSync(shortFile, JSON.stringify(links, null, 2));
-
-  res.redirect(link.originalUrl);
+    res.redirect(found.url);
+  });
 });
 
 /* =========================
