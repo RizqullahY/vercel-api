@@ -11,6 +11,8 @@ This is a straightforward web portfolio project that showcases information about
 * **API:**
   * **Endpoint:** `/api` (for a concise overview)
   * **Endpoint:** `/api/docs` (for more detailed API documentation)
+* **Shortener:**
+  * **Database:** Berbasis JSON yang tersimpan di [`src/data/datalinks.json`](./data/datalinks.json).
 
 **Technologies Used:**
 

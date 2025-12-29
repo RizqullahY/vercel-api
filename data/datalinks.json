@@ -1,10 +1,4 @@
 [
-  {
-    "code": "github2",
-    "url": "https://github.com/raflyasligalek"
-  },
-  {
-    "code": "docs",
-    "url": "https://raflyasligalek.vercel.app/api"
-  }
+  {"code": "github2","url": "https://github.com/raflyasligalek"},
+  {"code": "w3school-learn","url": "https://rizqullahy.github.io/my-w3schools-exercise/pages/"}
 ]
